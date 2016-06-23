@@ -40,10 +40,11 @@ def extract_size():
 
 def extract_weight():
     # in grams
+    # all test cases - http://regexr.com/3dmfu
     errors = [ x for x in phones.keys() if phones[x]['Weight'] in [[],['-']] ]
     valids = [ (x,phones[x]['Weight'][0]) for x in phones.keys() if phones[x]['Weight'] not in [[],['-']] ]
 
-    regex = re.compile(r"^([\d\.]+) g")
+    regex = re.compile(r"^(?:[A-Za-z\s]+)?([\d\.]+)")
     for name,value in valids:
         result = regex.findall(value)
         if result == []:
@@ -57,6 +58,7 @@ def extract_weight():
 def extract_screen_size():
     # size in inches
     # screen to body ratio in percentage
+    # all test cases - http://regexr.com/3dmb5
     errors = [ x for x in phones.keys() if phones[x]['Size'] in [[],['-']] ]
     valids = [ (x,phones[x]['Size'][0]) for x in phones.keys() if phones[x]['Size'] not in [[],['-']] ]
 
