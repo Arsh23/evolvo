@@ -35,12 +35,35 @@ def extract_size():
 
     #thinest
     # y = [ (x,phones[x]['Dimensions']['Width']) for x in phones.keys() ]
-    # z = sorted(y, key=lambda x: x[1])
+    # z = [ x for x in sorted(y, key=lambda x: x[1]) if x[1] != -1 ]
 
     #smallest area
     # y = [ (x,phones[x]['Dimensions']['Height']*phones[x]['Dimensions']['Length']) for x in phones.keys() ]
-    # z = sorted(y, key=lambda x: x[1])
+    # z = [ x for x in sorted(y, key=lambda x: x[1]) if x[1] != 1 ]
 
     #largest area
     # y = [ (x,phones[x]['Dimensions']['Height']*phones[x]['Dimensions']['Length']) for x in phones.keys() ]
     # z = sorted(y, key=lambda x: x[1],reverse=True)
+
+def extract_weight():
+    errors = [ x for x in phones.keys() if phones[x]['Weight'] in [[],['-']] ]
+    valids = [ (x,phones[x]['Weight'][0]) for x in phones.keys() if phones[x]['Weight'] not in [[],['-']] ]
+
+    regex = re.compile(r"^([\d\.]+) g")
+    for name,value in valids:
+        result = regex.findall(value)
+        if result == []:
+            errors.append(name)
+            continue
+        phones[name]['Weight'] = float(result[0])
+
+    for name in errors:
+        phones[name]['Weight'] = -1
+
+    #heaviest
+    # y = [ (x,phones[x]['Weight']) for x in phones.keys() ]
+    # z = sorted(y, key=lambda x: x[1],reverse=True)
+
+    #lightest
+    # y = [ (x,phones[x]['Weight']) for x in phones.keys() ]
+    # z = [ x for x in sorted(y, key=lambda x: x[1]) if x != -1 ]
