@@ -12,12 +12,15 @@ def load_data():
     [ [ phones.update({x:data[y][x]}) for x in data[y].keys() ] for y in data.keys() ]
 
 
+def filter_data(key):
+    e = [ x for x in phones.keys() if phones[x][key] in [[],['-']] ]
+    v = [ (x,phones[x][key][0]) for x in phones.keys() if phones[x][key] not in [[],['-']] ]
+    return v,e
+
 def extract_size():
     # in millimeters
     # all test cases  - http://regexr.com/3dmbq
-    errors = [ x for x in phones.keys() if phones[x]['Dimensions'] in [[],['-']] ]
-    valids = [ (x,phones[x]['Dimensions'][0]) for x in phones.keys() if phones[x]['Dimensions'] not in [[],['-']] ]
-
+    valids,errors = filter_data('Dimensions')
     regex = re.compile(r"^(?:([\d\.]+)|-?(?:[\w]*)?)(?:-?[ m\d\.]+)? x (?:([\d\.]+)|-?(?:[\w]*)?)(?:-?[ m\d\.]+)? x (?:([\d\.]+)|-?(?:[\w]*)?)(?:-?[ m\d\.]+)?")
     regex_thickness = re.compile(r"^([\d\.]+)[\s]?mm[\s]?thick")
 
@@ -41,10 +44,9 @@ def extract_size():
 def extract_weight():
     # in grams
     # all test cases - http://regexr.com/3dmfu
-    errors = [ x for x in phones.keys() if phones[x]['Weight'] in [[],['-']] ]
-    valids = [ (x,phones[x]['Weight'][0]) for x in phones.keys() if phones[x]['Weight'] not in [[],['-']] ]
-
+    valids,errors = filter_data('Weight')
     regex = re.compile(r"^(?:[A-Za-z\s]+)?([\d\.]+)")
+
     for name,value in valids:
         result = regex.findall(value)
         if result == []: errors.append(name)
@@ -57,10 +59,9 @@ def extract_screen_size():
     # size in inches
     # screen to body ratio in percentage
     # all test cases - http://regexr.com/3dmb5
-    errors = [ x for x in phones.keys() if phones[x]['Size'] in [[],['-']] ]
-    valids = [ (x,phones[x]['Size'][0]) for x in phones.keys() if phones[x]['Size'] not in [[],['-']] ]
-
+    valids,errors = filter_data('Size')
     regex = re.compile(r"^([\d\.]+) inches(?:[^\(]*\(~([\d\.]+)%)?")
+
     for name,value in valids:
         result = regex.findall(value)
         if result == []:
@@ -81,10 +82,9 @@ def extract_date():
     # all test cases - http://regexr.com/3dmjp
     # month - MM
     # all test cases - http://regexr.com/3dmk8
-    errors = [ x for x in phones.keys() if phones[x]['Announced'] in [[],['-']] ]
-    valids = [ (x,phones[x]['Announced'][0]) for x in phones.keys() if phones[x]['Announced'] not in [[],['-']] ]
-
+    valids,errors = filter_data('Announced')
     regex = re.compile(r"([\d]{4})")
+
     for name,value in valids:
         result = regex.findall(value)
         phones[name]['Date'] = {}
@@ -106,10 +106,9 @@ def extract_date():
 def extract_res():
     # month - MM
     # all test cases - http://regexr.com/3dmlc
-    errors = [ x for x in phones.keys() if phones[x]['Resolution'] in [[],['-']] ]
-    valids = [ (x,phones[x]['Resolution'][0]) for x in phones.keys() if phones[x]['Resolution'] not in [[],['-']] ]
-
+    valids,errors = filter_data('Resolution')
     regex = re.compile(r"^([\d]+)(?:[\s]*)x(?:[\s]*)([\d]+)(?:[\s]*)(?:\(~|pixels(?:[^\(\n]*\(~)?)(?:([\d]+) ppi)?")
+    
     for name,value in valids:
         result = regex.findall(value)
         if result == []:
