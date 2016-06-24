@@ -47,10 +47,8 @@ def extract_weight():
     regex = re.compile(r"^(?:[A-Za-z\s]+)?([\d\.]+)")
     for name,value in valids:
         result = regex.findall(value)
-        if result == []:
-            errors.append(name)
-            continue
-        phones[name]['Weight'] = float(result[0])
+        if result == []: errors.append(name)
+        else: phones[name]['Weight'] = float(result[0])
 
     for name in errors:
         phones[name]['Weight'] = -1
@@ -104,3 +102,26 @@ def extract_date():
     for name in errors:
         phones[name]['Date'] = {'Year':-1,'Month':-1}
         phones[name].pop('Announced',None)
+
+def extract_res():
+    # month - MM
+    # all test cases - http://regexr.com/3dmlc
+    errors = [ x for x in phones.keys() if phones[x]['Resolution'] in [[],['-']] ]
+    valids = [ (x,phones[x]['Resolution'][0]) for x in phones.keys() if phones[x]['Resolution'] not in [[],['-']] ]
+
+    regex = re.compile(r"^([\d]+)(?:[\s]*)x(?:[\s]*)([\d]+)(?:[\s]*)(?:\(~|pixels(?:[^\(\n]*\(~)?)(?:([\d]+) ppi)?")
+    for name,value in valids:
+        result = regex.findall(value)
+        if result == []:
+            errors.append(name)
+            continue
+
+        res = [ int(x) if x != '' else -1 for x in result[0] ]
+        phones[name]['Screen']['Resolution'] = {}
+        phones[name]['Screen']['Resolution'].update({'b':res[0],'h':res[1],'ppi':res[2]})
+        phones[name].pop('Resolution',None)
+
+    for name in errors:
+        phones[name]['Screen']['Resolution'] = {}
+        phones[name]['Screen']['Resolution'].update({'b':-1,'h':-1,'ppi':-1})
+        phones[name].pop('Resolution',None)
