@@ -104,11 +104,12 @@ def extract_date():
         phones[name].pop('Announced',None)
 
 def extract_res():
-    # month - MM
+    # resolution - breadth x height
+    # pixel density - ppi
     # all test cases - http://regexr.com/3dmlc
     valids,errors = filter_data('Resolution')
     regex = re.compile(r"^([\d]+)(?:[\s]*)x(?:[\s]*)([\d]+)(?:[\s]*)(?:\(~|pixels(?:[^\(\n]*\(~)?)(?:([\d]+) ppi)?")
-    
+
     for name,value in valids:
         result = regex.findall(value)
         if result == []:
@@ -124,3 +125,20 @@ def extract_res():
         phones[name]['Screen']['Resolution'] = {}
         phones[name]['Screen']['Resolution'].update({'b':-1,'h':-1,'ppi':-1})
         phones[name].pop('Resolution',None)
+
+def extract_touchscreen():
+    # yes - 1, no - 0
+    # all test cases - http://regexr.com/3dmlc
+    valids,errors = filter_data('Type')
+    regex = re.compile(r"([Tt]ouchscreen)")
+
+    for name,value in valids:
+        result = regex.findall(value)
+        if result == []: phones[name]['Screen']['Type'] = 0
+        else: phones[name]['Screen']['Type'] = 1
+
+    for name in errors:
+        phones[name]['Screen']['Type'] = -1
+
+    for name in phones.keys():
+        print phones[name]['Screen']['Type'],'                        ',name
