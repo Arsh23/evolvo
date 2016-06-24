@@ -5,11 +5,11 @@ data = {}
 phones = {}
 
 def load_data():
-    global data
+    global phones
     with open('data2.json', 'r') as fp:
-        data = json.load(fp)
+        phones = json.load(fp)
 
-    [ [ phones.update({x:data[y][x]}) for x in data[y].keys() ] for y in data.keys() ]
+    # [ [ phones.update({x:data[y][x]}) for x in data[y].keys() ] for y in data.keys() ]
 
 
 def filter_data(key):
