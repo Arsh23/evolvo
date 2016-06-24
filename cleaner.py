@@ -71,8 +71,7 @@ def extract_screen_size():
 
         phones[name]['Screen'] = {}
         phones[name]['Screen']['Size'] = float(result[0][0])
-        try:phones[name]['Screen']['s2b_ratio'] = float(result[0][1])
-        except:pass
+        phones[name]['Screen']['s2b_ratio'] = (float(result[0][1]) if result[0][1] != '' else -1)
         phones[name].pop('Size',None)
 
     for name in errors:
