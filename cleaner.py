@@ -108,7 +108,7 @@ def extract_res():
     # pixel density - ppi
     # all test cases - http://regexr.com/3dmlc
     valids,errors = filter_data('Resolution')
-    regex = re.compile(r"^([\d]+)(?:[\s]*)x(?:[\s]*)([\d]+)(?:[\s]*)(?:\(~|pixels(?:[^\(\n]*\(~)?)(?:([\d]+) ppi)?")
+    regex = re.compile(r"([\d]+)(?:[\s]*)x(?:[\s]*)([\d]+)(?:[\s]*)(?:\(~|pixels(?:[^\(\n]*\(~)?)(?:([\d]+) ppi)?")
 
     for name,value in valids:
         result = regex.findall(value)
@@ -128,7 +128,6 @@ def extract_res():
 
 def extract_touchscreen():
     # yes - 1, no - 0
-    # all test cases - http://regexr.com/3dmlc
     valids,errors = filter_data('Type')
     regex = re.compile(r"([Tt]ouchscreen)")
 
@@ -139,6 +138,3 @@ def extract_touchscreen():
 
     for name in errors:
         phones[name]['Screen']['Type'] = -1
-
-    for name in phones.keys():
-        print phones[name]['Screen']['Type'],'                        ',name
