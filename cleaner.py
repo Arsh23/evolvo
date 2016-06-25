@@ -1,16 +1,11 @@
 import re
 import json
 
-data = {}
 phones = {}
-
 def load_data():
     global phones
     with open('data2.json', 'r') as fp:
         phones = json.load(fp)
-
-    # [ [ phones.update({x:data[y][x]}) for x in data[y].keys() ] for y in data.keys() ]
-
 
 def filter_data(key):
     e = [ x for x in phones.keys() if phones[x][key] in [[],['-']] ]
@@ -138,3 +133,17 @@ def extract_touchscreen():
 
     for name in errors:
         phones[name]['Screen']['Type'] = -1
+
+def extract_battery():
+    # in mAh
+    #all test cases - http://regexr.com/3dmor
+    valids,errors = filter_data('Battery')
+    regex = re.compile(r"([\d]+) mAh")
+
+    for name,value in valids:
+        result = regex.findall(value)
+        if result != []: phones[name]['Battery'] = int(result[0])
+        else: phones[name]['Battery'] = -1
+
+    for name in errors:
+        phones[name]['Battery'] = -1
