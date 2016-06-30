@@ -1,3 +1,111 @@
-body{
+
+body {
     background: #e2e1e0;
+}
+.numbers {
+    width: calc(100% - 20%);
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.num{
+    float: left;
+    position: relative;
+    width:calc(100%/3 - 10px);
+    margin-left: 5px;
+    margin-right: 5px;
+    /*background-color: blue;*/
+    text-align: center;
+}
+
+.num-text{
+    position: relative;
+    font-size: 3.125rem;
+    font-family: 'Bungee Hairline';
+    font-weight: bold;
+    /*margin:0px;*/
+}
+
+
+.num-subtext{
+    position: relative;
+    font-size: 1.25rem;
+    font-weight: normal;
+    font-family: 'Maven Pro', sans-serif;
+    /*font-weight: bold;*/
+    /*margin:0px;*/
+}
+
+.space-left{
+    padding-left:40%;
+}
+
+.space-right{
+    padding-right:40%;
+}
+
+/*Media Queries*/
+@media only screen and (min-width: 1600px) {
+    body {
+        background-color: cyan;
+    }
+    html{
+        font-size: 23px;
+    }
+}
+@media only screen and (min-width: 1400px) and (max-width: 1599px) {
+    body {
+        background-color: lightblue;
+    }
+    html{
+        font-size: 20px;
+    }
+}
+@media only screen and (min-width: 800px) and (max-width: 960px) {
+    body {
+
+        background-color: lightblue;
+    }
+    html{
+        font-size: 14px;
+    }
+}
+@media only screen and (min-width: 600px) and (max-width: 799px) {
+    body {
+
+        background-color: cyan;
+    }
+    html{
+        font-size: 12px;
+    }
+}
+
+@media only screen and (min-width: 500px) and (max-width: 699px) {
+    body {
+
+        background-color: Blue;
+    }
+    html{
+        font-size: 10px;
+    }
+}
+
+@media only screen and (min-width: 400px) and (max-width: 599px) {
+    body {
+
+        background-color: darkBlue;
+    }
+    html{
+        font-size: 7px;
+    }
+}
+
+@media only screen and (max-width: 399px) {
+    body {
+
+        background-color: purple;
+    }
+    html{
+        font-size: 5px;
+    }
 }
