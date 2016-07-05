@@ -44,31 +44,6 @@
             color: '#9FA8DA'
         }];
 
-        var line_data_1 = [{
-            "x": 1,
-            "y": 5
-        }, {
-            "x": 20,
-            "y": 20
-        }];
-
-        var line_data_3 = [{
-            "x": 1,
-            "y": 5
-        }, {
-            "x": 20,
-            "y": 20
-        }];
-
-        var line_data_3 = [{
-            "x": 1,
-            "y": 5
-        }, {
-            "x": 20,
-            "y": 20
-        }];
-
-
         //size and margin
         var basewidth = $('.graph').width()
         var baseheight = $('.graph').height()
@@ -155,15 +130,41 @@
             .interpolate("linear");
 
         // draw the lines
+        line1_data = [{
+            "x": 1,
+            "y": 5
+        }, {
+            "x": 20,
+            "y": 20
+        }]
         line1 = canvas.append("path")
-            .attr("d", lineFunction(
-                [{
-                    "x": 1,
-                    "y": 5
-                }, {
-                    "x": 20,
-                    "y": 20
-                }]))
+            .attr("d", lineFunction(line1_data))
+            .attr("stroke", "blue")
+            .attr("stroke-width", 2)
+            .attr("fill", "none");
+
+        line2_data = [{
+            "x": 1,
+            "y": 5
+        }, {
+            "x": 20,
+            "y": 20
+        }]
+        line2 = canvas.append("path")
+            .attr("d", lineFunction(line2_data))
+            .attr("stroke", "blue")
+            .attr("stroke-width", 2)
+            .attr("fill", "none");
+
+        line3_data = [{
+            "x": 1,
+            "y": 5
+        }, {
+            "x": 20,
+            "y": 20
+        }]
+        line3 = canvas.append("path")
+            .attr("d", lineFunction(line3_data))
             .attr("stroke", "blue")
             .attr("stroke-width", 2)
             .attr("fill", "none");
@@ -182,22 +183,29 @@
                 endAngle: end_angle
             }, b);
             return function(t) {
-                if (b.data.label == 'Phones') {
-                    var line_data = [{
-                        "x": 1,
-                        "y": 5
-                    }, {
-                        "x": 20,
-                        "y": 20
-                    }, {
+                if (b.data.label == 'Brands') {
+                    var temp = line1_data.slice()
+                    temp.push({
                         "x": arc.centroid(i(ease(t)))[0],
                         "y": arc.centroid(i(ease(t)))[1]
-                    }];
-                    // line1.transition()
-                        line1.attr("d", lineFunction(line_data))
-                        // .attr("stroke", "blue")
-                        // .attr("stroke-width", 2)
-                        // .attr("fill", "none");
+                    })
+                    line1.attr("d", lineFunction(temp))
+                }
+                if (b.data.label == 'Years') {
+                    var temp = line2_data.slice()
+                    temp.push({
+                        "x": arc.centroid(i(ease(t)))[0],
+                        "y": arc.centroid(i(ease(t)))[1]
+                    })
+                    line2.attr("d", lineFunction(temp))
+                }
+                if (b.data.label == 'Phones') {
+                    var temp = line3_data.slice()
+                    temp.push({
+                        "x": arc.centroid(i(ease(t)))[0],
+                        "y": arc.centroid(i(ease(t)))[1]
+                    })
+                    line3.attr("d", lineFunction(temp))
                 }
                 return "translate(" + arc.centroid(i(ease(t))) + ")";
             };
