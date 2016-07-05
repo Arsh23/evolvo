@@ -18,9 +18,11 @@
         height: 300;
     }
 
-    .arc text {
-        font: 10px sans-serif;
-        text-anchor: middle;
+    text {
+        font-size: 1.25rem;
+        font-family: 'Bungee Hairline';
+        font-weight: bold;
+        /*text-anchor: middle;*/
     }
 </style>
 
@@ -131,7 +133,7 @@
 
         // draw the lines
         line1_data = [{
-            "x": 270,
+            "x": 290,
             "y": -100
         }, {
             "x": 120,
@@ -153,7 +155,7 @@
             .attr("d", lineFunction(line2_data))
 
         line3_data = [{
-            "x": -280,
+            "x": -330,
             "y": 70
         }, {
             "x": -140,
@@ -210,37 +212,6 @@
             };
         }
 
-        //
-        //     [{
-        //        "x": 1,
-        //        "y": 5
-        //    }, {
-        //        "x": 20,
-        //        "y": 20
-        //    }]
-        // canvas.append("path")
-        //     .attr("d", lineFunction(line_data_1))
-        //     .attr("stroke", "blue")
-        //     .attr("stroke-width", 2)
-        //     .attr("fill", "none");
-
-        // arc_slice.append('circle')
-        //     .attr('fill', 'black')
-        //     .attr('r', 2.5)
-        //     .transition()
-        //     .duration(anim_delay)
-        //     .attrTween("transform", tweenDot);
-        //
-        // function tweenDot(b) {
-        //     var i = d3.interpolate({
-        //         startAngle: start_angle,
-        //         endAngle: end_angle
-        //     }, b);
-        //     return function(t) {
-        //         return "translate(" + arc.centroid(i(ease(t))) + ")";
-        //     };
-        // }
-
         // add the labels
         canvas.selectAll(".txt")
             .data(data)
@@ -250,9 +221,27 @@
                 return d.label + '0'
             })
             .attr("class", "txt")
-            // .attr("x", 10)
-            .attr("y", function(d, i) {
-                return 50 + i * 30
+            .attr("x", function(d) {
+                if (d.label == 'Brands') {
+                    return 145;
+                }
+                if (d.label == 'Years') {
+                    return 130;
+                }
+                if (d.label == 'Phones') {
+                    return -320;
+                }
+            })
+            .attr("y", function(d) {
+                if (d.label == 'Brands') {
+                    return -102;
+                }
+                if (d.label == 'Years') {
+                    return 98;
+                }
+                if (d.label == 'Phones') {
+                    return 68;
+                }
             })
             .transition()
             .duration(anim_delay)
@@ -263,7 +252,7 @@
             var i = d3.interpolate(0, d.value)
             return function(t) {
                 var num = Math.round(i(ease(t)))
-                this.textContent = d.label + num.toString();
+                this.textContent = d.label + ': ' + num.toString();
             };
         }
     </script>
