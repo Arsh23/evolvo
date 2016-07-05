@@ -13,12 +13,17 @@
 </head>
 
 <style>
+    .container {
+        overflow: hidden;
+        position: relative;
+    }
+
     .graph {
         position: relative;
         width: 1500;
         height: 300;
-        left:50%;
-        margin-left:-750px
+        left: 50%;
+        margin-left: -750px
     }
 
     text {
@@ -30,246 +35,247 @@
 </style>
 
 <body>
-    <div class='graph'></div>
-    <script>
-        var data = [{
-            label: 'Brands',
-            count: 30,
-            value: 108,
-            color: '#FF6961'
-        }, {
-            label: 'Years',
-            count: 10,
-            value: 22,
-            color: '#BA68C8'
-        }, {
-            label: 'Phones',
-            count: 60,
-            value: 8704,
-            color: '#9FA8DA'
-        }];
+    <div class='container'>
+        <div class='graph'></div>
+        <script>
+            var data = [{
+                label: 'Brands',
+                count: 30,
+                value: 108,
+                color: '#FF6961'
+            }, {
+                label: 'Years',
+                count: 10,
+                value: 22,
+                color: '#BA68C8'
+            }, {
+                label: 'Phones',
+                count: 60,
+                value: 8704,
+                color: '#9FA8DA'
+            }];
 
-        //size and margin
-        var basewidth = $('.graph').width()
-        var baseheight = $('.graph').height()
-        var margin = {
-                top: 50,
-                right: 10,
-                bottom: 40,
-                left: 10
-            },
-            width = basewidth - margin.left - margin.right,
-            height = baseheight - margin.top - margin.bottom;
-        var radius = Math.min(width, height) / 2;
-        var donutwidth = 12;
-        var anim_delay = 4000; //secs
-        var start_angle = 0;
-        var end_angle = 0;
+            //size and margin
+            var basewidth = $('.graph').width()
+            var baseheight = $('.graph').height()
+            var margin = {
+                    top: 50,
+                    right: 10,
+                    bottom: 40,
+                    left: 10
+                },
+                width = basewidth - margin.left - margin.right,
+                height = baseheight - margin.top - margin.bottom;
+            var radius = Math.min(width, height) / 2;
+            var donutwidth = 12;
+            var anim_delay = 4000; //secs
+            var start_angle = 0;
+            var end_angle = 0;
 
-        // main canvas
-        var svg = d3.select('.graph')
-            .append('svg')
-            .attr('width', width + margin.left + margin.right)
-            .attr('height', height + margin.top + margin.bottom)
-            .append('g')
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-        var canvas = svg.append("g")
-            .attr('transform', 'translate(' + (width / 2) + ',' + (height / 2) + ')');
-
-
-        // arc function
-        var arc = d3.svg.arc()
-            .innerRadius(radius - donutwidth)
-            .outerRadius(radius)
-            .startAngle(function(d) {
-                return d.startAngle + start_angle;
-            })
-            .endAngle(function(d) {
-                return d.endAngle + end_angle;
-            });
-
-        // pie function
-        var pie = d3.layout.pie()
-            .value(function(d) {
-                return d.count;
-            })
-            .padAngle(.08)
-            .sort(null);
-
-        var ease = d3.easeCircleInOut
-
-        // draw the arcs
-        var arc_slice = canvas.selectAll(".arc")
-            .data(pie(data))
-            .enter()
-            .append("g")
-            .attr("class", "arc");
-
-        arc_slice.append('path')
-            .attr('fill', function(d, i) {
-                return d.data.color;
-            })
-            .transition()
-            .duration(anim_delay)
-            .attrTween("d", tweenPie);
-
-        // animate the arcs
-        function tweenPie(b) {
-            var i = d3.interpolate({
-                startAngle: start_angle,
-                endAngle: end_angle
-            }, b);
-            return function(t) {
-                return arc(i((ease(t))));
-            };
-        }
-
-        // line function
-        var lineFunction = d3.svg.line()
-            .x(function(d) {
-                return d.x;
-            })
-            .y(function(d) {
-                return d.y;
-            })
-            .interpolate("linear");
-
-        // draw the lines
-        line1_data = [{
-            "x": 290,
-            "y": -100
-        }, {
-            "x": 120,
-            "y": -100
-        }]
-        line1 = canvas.append("path")
-            .attr('class', 'lines')
-            .attr("d", lineFunction(line1_data))
-
-        line2_data = [{
-            "x": 250,
-            "y": 100
-        }, {
-            "x": 110,
-            "y": 100
-        }]
-        line2 = canvas.append("path")
-            .attr('class', 'lines')
-            .attr("d", lineFunction(line2_data))
-
-        line3_data = [{
-            "x": -330,
-            "y": 70
-        }, {
-            "x": -140,
-            "y": 70
-        }]
-        line3 = canvas.append("path")
-            .attr('class', 'lines')
-            .attr("d", lineFunction(line3_data))
-
-        canvas.selectAll(".lines")
-            .attr("stroke", "black")
-            .attr("stroke-width", 1)
-            .attr("fill", "none");
-
-        arc_slice.append('circle')
-            .attr('fill', 'black')
-            .attr('r', 2.5)
-            .transition()
-            .duration(anim_delay)
-            .attrTween("transform", tweenDot);
-
-        // animate the lines
-        function tweenDot(b) {
-            var i = d3.interpolate({
-                startAngle: start_angle,
-                endAngle: end_angle
-            }, b);
-            return function(t) {
-                if (b.data.label == 'Brands') {
-                    var temp = line1_data.slice()
-                    temp.push({
-                        "x": arc.centroid(i(ease(t)))[0],
-                        "y": arc.centroid(i(ease(t)))[1]
-                    })
-                    line1.attr("d", lineFunction(temp))
-                }
-                if (b.data.label == 'Years') {
-                    var temp = line2_data.slice()
-                    temp.push({
-                        "x": arc.centroid(i(ease(t)))[0],
-                        "y": arc.centroid(i(ease(t)))[1]
-                    })
-                    line2.attr("d", lineFunction(temp))
-                }
-                if (b.data.label == 'Phones') {
-                    var temp = line3_data.slice()
-                    temp.push({
-                        "x": arc.centroid(i(ease(t)))[0],
-                        "y": arc.centroid(i(ease(t)))[1]
-                    })
-                    line3.attr("d", lineFunction(temp))
-                }
-                return "translate(" + arc.centroid(i(ease(t))) + ")";
-            };
-        }
-
-        // add the labels
-        canvas.selectAll(".txt")
-            .data(data)
-            .enter()
-            .append("text")
-            .text(function(d) {
-                return d.label + '0'
-            })
-            .attr("class", "txt")
-            .attr("x", function(d) {
-                if (d.label == 'Brands') {
-                    return 145;
-                }
-                if (d.label == 'Years') {
-                    return 130;
-                }
-                if (d.label == 'Phones') {
-                    return -320;
-                }
-            })
-            .attr("y", function(d) {
-                if (d.label == 'Brands') {
-                    return -102;
-                }
-                if (d.label == 'Years') {
-                    return 98;
-                }
-                if (d.label == 'Phones') {
-                    return 68;
-                }
-            })
-            .transition()
-            .duration(anim_delay)
-            .tween("text", tweenText);
-
-        // animate the numbers
-        function tweenText(d) {
-            var i = d3.interpolate(0, d.value)
-            return function(t) {
-                var num = Math.round(i(ease(t)))
-                this.textContent = d.label + ': ' + num.toString();
-            };
-        }
-    </script>
+            // main canvas
+            var svg = d3.select('.graph')
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom)
+                .append('g')
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            var canvas = svg.append("g")
+                .attr('transform', 'translate(' + (width / 2) + ',' + (height / 2) + ')');
 
 
-    <div class='heading'>
-        <p class='heading-text'>The evolution of mobiles</p>
+            // arc function
+            var arc = d3.svg.arc()
+                .innerRadius(radius - donutwidth)
+                .outerRadius(radius)
+                .startAngle(function(d) {
+                    return d.startAngle + start_angle;
+                })
+                .endAngle(function(d) {
+                    return d.endAngle + end_angle;
+                });
+
+            // pie function
+            var pie = d3.layout.pie()
+                .value(function(d) {
+                    return d.count;
+                })
+                .padAngle(.08)
+                .sort(null);
+
+            var ease = d3.easeCircleInOut
+
+            // draw the arcs
+            var arc_slice = canvas.selectAll(".arc")
+                .data(pie(data))
+                .enter()
+                .append("g")
+                .attr("class", "arc");
+
+            arc_slice.append('path')
+                .attr('fill', function(d, i) {
+                    return d.data.color;
+                })
+                .transition()
+                .duration(anim_delay)
+                .attrTween("d", tweenPie);
+
+            // animate the arcs
+            function tweenPie(b) {
+                var i = d3.interpolate({
+                    startAngle: start_angle,
+                    endAngle: end_angle
+                }, b);
+                return function(t) {
+                    return arc(i((ease(t))));
+                };
+            }
+
+            // line function
+            var lineFunction = d3.svg.line()
+                .x(function(d) {
+                    return d.x;
+                })
+                .y(function(d) {
+                    return d.y;
+                })
+                .interpolate("linear");
+
+            // draw the lines
+            line1_data = [{
+                "x": 290,
+                "y": -100
+            }, {
+                "x": 120,
+                "y": -100
+            }]
+            line1 = canvas.append("path")
+                .attr('class', 'lines')
+                .attr("d", lineFunction(line1_data))
+
+            line2_data = [{
+                "x": 250,
+                "y": 100
+            }, {
+                "x": 110,
+                "y": 100
+            }]
+            line2 = canvas.append("path")
+                .attr('class', 'lines')
+                .attr("d", lineFunction(line2_data))
+
+            line3_data = [{
+                "x": -330,
+                "y": 70
+            }, {
+                "x": -140,
+                "y": 70
+            }]
+            line3 = canvas.append("path")
+                .attr('class', 'lines')
+                .attr("d", lineFunction(line3_data))
+
+            canvas.selectAll(".lines")
+                .attr("stroke", "black")
+                .attr("stroke-width", 1)
+                .attr("fill", "none");
+
+            arc_slice.append('circle')
+                .attr('fill', 'black')
+                .attr('r', 2.5)
+                .transition()
+                .duration(anim_delay)
+                .attrTween("transform", tweenDot);
+
+            // animate the lines
+            function tweenDot(b) {
+                var i = d3.interpolate({
+                    startAngle: start_angle,
+                    endAngle: end_angle
+                }, b);
+                return function(t) {
+                    if (b.data.label == 'Brands') {
+                        var temp = line1_data.slice()
+                        temp.push({
+                            "x": arc.centroid(i(ease(t)))[0],
+                            "y": arc.centroid(i(ease(t)))[1]
+                        })
+                        line1.attr("d", lineFunction(temp))
+                    }
+                    if (b.data.label == 'Years') {
+                        var temp = line2_data.slice()
+                        temp.push({
+                            "x": arc.centroid(i(ease(t)))[0],
+                            "y": arc.centroid(i(ease(t)))[1]
+                        })
+                        line2.attr("d", lineFunction(temp))
+                    }
+                    if (b.data.label == 'Phones') {
+                        var temp = line3_data.slice()
+                        temp.push({
+                            "x": arc.centroid(i(ease(t)))[0],
+                            "y": arc.centroid(i(ease(t)))[1]
+                        })
+                        line3.attr("d", lineFunction(temp))
+                    }
+                    return "translate(" + arc.centroid(i(ease(t))) + ")";
+                };
+            }
+
+            // add the labels
+            canvas.selectAll(".txt")
+                .data(data)
+                .enter()
+                .append("text")
+                .text(function(d) {
+                    return d.label + '0'
+                })
+                .attr("class", "txt")
+                .attr("x", function(d) {
+                    if (d.label == 'Brands') {
+                        return 145;
+                    }
+                    if (d.label == 'Years') {
+                        return 130;
+                    }
+                    if (d.label == 'Phones') {
+                        return -320;
+                    }
+                })
+                .attr("y", function(d) {
+                    if (d.label == 'Brands') {
+                        return -102;
+                    }
+                    if (d.label == 'Years') {
+                        return 98;
+                    }
+                    if (d.label == 'Phones') {
+                        return 68;
+                    }
+                })
+                .transition()
+                .duration(anim_delay)
+                .tween("text", tweenText);
+
+            // animate the numbers
+            function tweenText(d) {
+                var i = d3.interpolate(0, d.value)
+                return function(t) {
+                    var num = Math.round(i(ease(t)))
+                    this.textContent = d.label + ': ' + num.toString();
+                };
+            }
+        </script>
+
+
+        <div class='heading'>
+            <p class='heading-text'>The evolution of mobiles</p>
+        </div>
+
+        <div class='subtext'>
+            <p class='subtext-text'>A data visualization experiment to analyze and explore the evolution of mobile phones
+                <br> through the years. </p>
+        </div>
     </div>
-
-    <div class='subtext'>
-        <p class='subtext-text'>A data visualization experiment to analyze and explore the evolution of mobile phones
-            <br> through the years. </p>
-    </div>
-
 
 </body>
 
