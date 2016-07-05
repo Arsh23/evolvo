@@ -15,16 +15,12 @@
 <style>
     .graph {
         width: 100%;
-        height: 250px;
+        height: 45%;
     }
 
     .arc text {
         font: 10px sans-serif;
         text-anchor: middle;
-    }
-
-    .arc path {
-        /*stroke: #fff;*/
     }
 </style>
 
@@ -48,12 +44,36 @@
             color: '#9FA8DA'
         }];
 
+        var line_data_1 = [{
+            "x": 1,
+            "y": 5
+        }, {
+            "x": 20,
+            "y": 20
+        }];
+
+        var line_data_3 = [{
+            "x": 1,
+            "y": 5
+        }, {
+            "x": 20,
+            "y": 20
+        }];
+
+        var line_data_3 = [{
+            "x": 1,
+            "y": 5
+        }, {
+            "x": 20,
+            "y": 20
+        }];
+
 
         //size and margin
         var basewidth = $('.graph').width()
         var baseheight = $('.graph').height()
         var margin = {
-                top: 30,
+                top: 50,
                 right: 10,
                 bottom: 40,
                 left: 10
@@ -76,6 +96,8 @@
         var canvas = svg.append("g")
             .attr('transform', 'translate(' + (width / 2) + ',' + (height / 2) + ')');
 
+
+        // arc function
         var arc = d3.svg.arc()
             .innerRadius(radius - donutwidth)
             .outerRadius(radius)
@@ -86,6 +108,7 @@
                 return d.endAngle + end_angle;
             });
 
+        // pie function
         var pie = d3.layout.pie()
             .value(function(d) {
                 return d.count;
@@ -95,6 +118,7 @@
 
         var ease = d3.easeCircleInOut
 
+        // draw the arcs
         var arc_slice = canvas.selectAll(".arc")
             .data(pie(data))
             .enter()
@@ -109,6 +133,7 @@
             .duration(anim_delay)
             .attrTween("d", tweenPie);
 
+        // animate the arcs
         function tweenPie(b) {
             var i = d3.interpolate({
                 startAngle: start_angle,
@@ -119,30 +144,102 @@
             };
         }
 
+        // line function
+        var lineFunction = d3.svg.line()
+            .x(function(d) {
+                return d.x;
+            })
+            .y(function(d) {
+                return d.y;
+            })
+            .interpolate("linear");
+
+        // draw the lines
+        line1 = canvas.append("path")
+            .attr("d", lineFunction(
+                [{
+                    "x": 1,
+                    "y": 5
+                }, {
+                    "x": 20,
+                    "y": 20
+                }]))
+            .attr("stroke", "blue")
+            .attr("stroke-width", 2)
+            .attr("fill", "none");
+
         arc_slice.append('circle')
             .attr('fill', 'black')
-            // .attr('cx',-10)
-            // .attr('cy',-10)
             .attr('r', 2.5)
             .transition()
             .duration(anim_delay)
             .attrTween("transform", tweenDot);
 
+        // animate the lines
         function tweenDot(b) {
             var i = d3.interpolate({
                 startAngle: start_angle,
                 endAngle: end_angle
             }, b);
             return function(t) {
+                if (b.data.label == 'Phones') {
+                    var line_data = [{
+                        "x": 1,
+                        "y": 5
+                    }, {
+                        "x": 20,
+                        "y": 20
+                    }, {
+                        "x": arc.centroid(i(ease(t)))[0],
+                        "y": arc.centroid(i(ease(t)))[1]
+                    }];
+                    // line1.transition()
+                        line1.attr("d", lineFunction(line_data))
+                        // .attr("stroke", "blue")
+                        // .attr("stroke-width", 2)
+                        // .attr("fill", "none");
+                }
                 return "translate(" + arc.centroid(i(ease(t))) + ")";
             };
         }
 
+        //
+        //     [{
+        //        "x": 1,
+        //        "y": 5
+        //    }, {
+        //        "x": 20,
+        //        "y": 20
+        //    }]
+        // canvas.append("path")
+        //     .attr("d", lineFunction(line_data_1))
+        //     .attr("stroke", "blue")
+        //     .attr("stroke-width", 2)
+        //     .attr("fill", "none");
+
+        // arc_slice.append('circle')
+        //     .attr('fill', 'black')
+        //     .attr('r', 2.5)
+        //     .transition()
+        //     .duration(anim_delay)
+        //     .attrTween("transform", tweenDot);
+        //
+        // function tweenDot(b) {
+        //     var i = d3.interpolate({
+        //         startAngle: start_angle,
+        //         endAngle: end_angle
+        //     }, b);
+        //     return function(t) {
+        //         return "translate(" + arc.centroid(i(ease(t))) + ")";
+        //     };
+        // }
+
+        // add the labels
         canvas.selectAll(".txt")
             .data(data)
             .enter()
             .append("text")
-            .text( function(d){
+            .text(function(d) {
                 return d.label + '0'
             })
             .attr("class", "txt")
@@ -154,7 +251,7 @@
             .duration(anim_delay)
             .tween("text", tweenText);
 
-
+        // animate the numbers
         function tweenText(d) {
             var i = d3.interpolate(0, d.value)
             return function(t) {
@@ -162,21 +259,6 @@
                 this.textContent = d.label + num.toString();
             };
         }
-
-
-        // txt1 = canvas.append('text')
-        //     .text(0)
-        //     .transition()
-        //     .duration(anim_delay)
-        //     .tween("text", tweenText);
-        //
-        // function tweenText(d) {
-            // var i = d3.interpolate(this.textContent, 8704)
-            //
-            // return function(t) {
-            //     this.textContent = Math.round(i(ease(t)));
-            // };
-        // }
     </script>
 
 
@@ -186,7 +268,7 @@
 
     <div class='subtext'>
         <p class='subtext-text'>A data visualization experiment to analyze and explore the evolution of mobile phones
-            <br> through the years. Data from gsmarena.com</p>
+            <br> through the years. </p>
     </div>
 
 
