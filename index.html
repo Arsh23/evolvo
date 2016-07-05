@@ -14,8 +14,8 @@
 
 <style>
     .graph {
-        width: 100%;
-        height: 45%;
+        width: 1500;
+        height: 300;
     }
 
     .arc text {
@@ -29,7 +29,7 @@
     <script>
         var data = [{
             label: 'Brands',
-            count: 20,
+            count: 30,
             value: 108,
             color: '#FF6961'
         }, {
@@ -39,7 +39,7 @@
             color: '#BA68C8'
         }, {
             label: 'Phones',
-            count: 70,
+            count: 60,
             value: 8704,
             color: '#9FA8DA'
         }];
@@ -131,42 +131,41 @@
 
         // draw the lines
         line1_data = [{
-            "x": 1,
-            "y": 5
+            "x": 270,
+            "y": -100
         }, {
-            "x": 20,
-            "y": 20
+            "x": 120,
+            "y": -100
         }]
         line1 = canvas.append("path")
+            .attr('class', 'lines')
             .attr("d", lineFunction(line1_data))
-            .attr("stroke", "blue")
-            .attr("stroke-width", 2)
-            .attr("fill", "none");
 
         line2_data = [{
-            "x": 1,
-            "y": 5
+            "x": 250,
+            "y": 100
         }, {
-            "x": 20,
-            "y": 20
+            "x": 100,
+            "y": 100
         }]
         line2 = canvas.append("path")
+            .attr('class', 'lines')
             .attr("d", lineFunction(line2_data))
-            .attr("stroke", "blue")
-            .attr("stroke-width", 2)
-            .attr("fill", "none");
 
         line3_data = [{
-            "x": 1,
-            "y": 5
+            "x": -280,
+            "y": 70
         }, {
-            "x": 20,
-            "y": 20
+            "x": -140,
+            "y": 70
         }]
         line3 = canvas.append("path")
+            .attr('class', 'lines')
             .attr("d", lineFunction(line3_data))
-            .attr("stroke", "blue")
-            .attr("stroke-width", 2)
+
+        canvas.selectAll(".lines")
+            .attr("stroke", "black")
+            .attr("stroke-width", 1)
             .attr("fill", "none");
 
         arc_slice.append('circle')
