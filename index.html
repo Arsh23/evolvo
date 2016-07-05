@@ -15,7 +15,7 @@
 <style>
     .graph {
         width: 100%;
-        height: 200px;
+        height: 250px;
     }
 
     .arc text {
@@ -29,42 +29,22 @@
 </style>
 
 <body>
-
-    <!-- <div class='numbers'>
-        <center>
-            <div class='num'>
-                <p class='num-text'>8704
-
-                    <p class='num-subtext'>Phones</p>
-
-            </div>
-            <div class='num'>
-                <p class='num-text'>22
-
-                    <p class='num-subtext'>Years</p>
-            </div>
-            <div class='num'>
-                <p class='num-text'>108
-
-                    <p class='num-subtext'>Brands</p>
-
-            </div>
-        </center>
-    </div> -->
-
     <div class='graph'></div>
     <script>
-        var dataset = [{
+        var data = [{
             label: 'Brands',
             count: 20,
+            value:108,
             color: '#FF6961'
         }, {
             label: 'Years',
             count: 10,
+            value:22,
             color: '#BA68C8'
         }, {
             label: 'Phones',
             count: 70,
+            value:8704,
             color: '#9FA8DA'
         }];
 
@@ -73,15 +53,18 @@
         var basewidth = $('.graph').width()
         var baseheight = $('.graph').height()
         var margin = {
-                top: 10,
+                top: 30,
                 right: 10,
-                bottom: 10,
+                bottom: 40,
                 left: 10
             },
             width = basewidth - margin.left - margin.right,
             height = baseheight - margin.top - margin.bottom;
         var radius = Math.min(width, height) / 2;
         var donutwidth = 12;
+        var anim_delay = 4000; //secs
+        var start_angle = 0;
+        var end_angle = 0;
 
         // main canvas
         var svg = d3.select('.graph')
@@ -93,12 +76,11 @@
             .append('g')
             .attr('transform', 'translate(' + (width / 2) + ',' + (height / 2) + ')');
 
-        var color = d3.scale.category20b();
         var arc = d3.svg.arc()
             .innerRadius(radius - donutwidth)
             .outerRadius(radius)
-            // .startAngle(function(d) { return d.startAngle + Math.PI/2; })
-            // .endAngle(function(d) { return d.endAngle + Math.PI/2; });
+            .startAngle(function(d) { return d.startAngle + start_angle; })
+            .endAngle(function(d) { return d.endAngle + end_angle; });
 
         var pie = d3.layout.pie()
             .value(function(d) {
@@ -106,58 +88,33 @@
             })
             .padAngle(.08)
             .sort(null);
-        //
-        // var g = canvas.selectAll('path')
-        //     .data(pie(dataset))
-        //     .enter()
-        // var ease= d3.easeExpOut()
 
-        var g = canvas.selectAll(".arc")
-            .data(pie(dataset))
+        var ease = d3.easeCircleInOut
+
+        var arc_slice = canvas.selectAll(".arc")
+            .data(pie(data))
             .enter()
             .append("g")
             .attr("class", "arc");
 
-        g.append('path')
-            // .attr('d', arc)
+        arc_slice.append('path')
             .attr('fill', function(d, i) {
                 return d.data.color;
             })
             .transition()
-            // .ease(ease)
-            .duration(4000)
+            .duration(anim_delay)
             .attrTween("d", tweenPie);
 
         function tweenPie(b) {
             var i = d3.interpolate({
-                startAngle: 0,
-                endAngle: 0
+                startAngle: start_angle,
+                endAngle: end_angle
             }, b);
             return function(t) {
-                return arc(i((d3.easeCircleInOut(t))));
+                return arc(i((ease(t))));
             };
         }
 
-
-
-
-
-
-
-
-        // .transition()
-        // .delay(function(d, i) {
-        //     return (i+1) * 500;
-        // })
-        // .ease("linear")
-        // .duration(500)
-        // .attrTween('d', function(d) {
-        //     var i = d3.interpolate(d.startAngle , d.endAngle);
-        //     return function(t) {
-        //         d.endAngle = i(t);
-        //         return arc(d);
-        //     }
-        // });
     </script>
 
 
