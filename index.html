@@ -34,17 +34,17 @@
         var data = [{
             label: 'Brands',
             count: 20,
-            value:108,
+            value: 108,
             color: '#FF6961'
         }, {
             label: 'Years',
             count: 10,
-            value:22,
+            value: 22,
             color: '#BA68C8'
         }, {
             label: 'Phones',
             count: 70,
-            value:8704,
+            value: 8704,
             color: '#9FA8DA'
         }];
 
@@ -70,17 +70,21 @@
         var svg = d3.select('.graph')
             .append('svg')
             .attr('width', width + margin.left + margin.right)
-            .attr('height', height + margin.top + margin.bottom);
-        var canvas = svg.append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+            .attr('height', height + margin.top + margin.bottom)
             .append('g')
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        var canvas = svg.append("g")
             .attr('transform', 'translate(' + (width / 2) + ',' + (height / 2) + ')');
 
         var arc = d3.svg.arc()
             .innerRadius(radius - donutwidth)
             .outerRadius(radius)
-            .startAngle(function(d) { return d.startAngle + start_angle; })
-            .endAngle(function(d) { return d.endAngle + end_angle; });
+            .startAngle(function(d) {
+                return d.startAngle + start_angle;
+            })
+            .endAngle(function(d) {
+                return d.endAngle + end_angle;
+            });
 
         var pie = d3.layout.pie()
             .value(function(d) {
@@ -115,6 +119,38 @@
             };
         }
 
+        arc_slice.append('circle')
+            .attr('fill', 'black')
+            // .attr('cx',-10)
+            // .attr('cy',-10)
+            .attr('r', 2.5)
+            .transition()
+            .duration(anim_delay)
+            .attrTween("transform", tweenDot);
+
+        function tweenDot(b) {
+            var i = d3.interpolate({
+                startAngle: start_angle,
+                endAngle: end_angle
+            }, b);
+            return function(t) {
+                return "translate(" + arc.centroid(i(ease(t))) + ")";
+            };
+        }
+
+        txt1 = canvas.append('text')
+            .text(0)
+            .transition()
+            .duration(anim_delay)
+            .tween("text", tweenText);
+
+        function tweenText(d) {
+            var i = d3.interpolate(this.textContent, 8704)
+
+            return function(t) {
+                this.textContent = Math.round(i(ease(t)));
+            };
+        }
     </script>
 
 
