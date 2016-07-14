@@ -24,5 +24,5 @@ The code for the cleaner can be found in cleaner.py .
 Data wrangling is done on the flask server(app.py) when the data is transfered between cleaner and D3
 
 ### Data Visualization (wip)
-TBD using D3
+TBD using D3, coming soon !!
 
