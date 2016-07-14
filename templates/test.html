@@ -1,0 +1,65 @@
+<html>
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Amatica+SC|Bungee+Hairline|Josefin+Sans|Maven+Pro|Poiret+One|Raleway|Space+Mono|Titillium+Web" rel="stylesheet">
+    <!-- jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <!-- d3.js -->
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="https://d3js.org/d3-ease.v1.min.js"></script>
+    <!-- custom css -->
+    <!-- <link rel=stylesheet type=text/css href="css/main.css"> -->
+
+</head>
+
+<style>
+    .container {
+        overflow: hidden;
+        position: relative;
+    }
+
+    .graph {
+        position: relative;
+        width: 1500;
+        height: 300;
+        left: 50%;
+        margin-left: -750px
+    }
+
+</style>
+
+<body>
+    <div class='container'>
+        <div class='graph'></div>
+        <script>
+
+
+
+        //size and margin
+        var basewidth = $('.graph').width()
+        var baseheight = $('.graph').height()
+        var margin = {
+                top: 10,
+                right: 10,
+                bottom: 30,
+                left: 40
+            },
+            width = basewidth - margin.left - margin.right,
+            height = baseheight - margin.top - margin.bottom;
+
+
+        // main canvas
+        var svg = d3.select('.graph')
+            .append('svg')
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom)
+        var canvas = svg.append("g")
+            .attr("class", "points")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+
+        </script>
+    </div>
+
+</body>
+
+</html>
